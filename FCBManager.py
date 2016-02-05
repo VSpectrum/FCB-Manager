@@ -24,28 +24,29 @@ class TropicalCourier:
 
         username = browser.find_element_by_name('userName')
         username.send_keys(account_number)
-
         password = browser.find_element_by_name('password')
         password.send_keys(account_password)
 
         form = browser.find_element_by_id('noautocomplete')
         form.submit()
-
         url = r"https://www.firstcitizenstt.net/accountList.do"
         browser.get(url)
-
         response = browser.page_source
         soup = BeautifulSoup(response, "html.parser")
 
-        print soup
+        #TOTAL BALANCE
+        total_balance = []
+        total_balance_type = []
+        total_balance_amount = []
+        for td in soup.find_all('div', {'class': 'column'}):
+            for span in td.find_all('dt'):
+                total_balance_type.append(span.text)
+            for span in td.find_all('dd'):
+                total_balance_amount.append(span.text)
+        total_balance = zip(total_balance_type, total_balance_amount)
+        print total_balance
 
-        td_elements = soup.find_all('td', {'class': 'right '})
-        for td in soup.find_all('td', {'class': 'right '}):
-            for span in td.find_all('span'):
-                print td.text
-        #costs = [(td.renderContents()[1::]) for td in td_elements]
-        #print results
-
+        #GET CURRENT BALANCE
 
 
 root = Tk()
