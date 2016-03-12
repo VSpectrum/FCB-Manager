@@ -1,54 +1,70 @@
 from bs4 import BeautifulSoup
-from Tkinter import *
-from config import account_number, account_password
+from config import *
 from selenium import webdriver
+#from selenium.webdriver.support.select import Select
+import os
 
-class TropicalCourier:
-    def __init__(self, master):
-        master.minsize(width=300, height=300)
-        master.maxsize(width=300, height=300)
+phantomjs = os.path.realpath(os.path.join(os.getcwd(), "phantomjs"))
+browser = webdriver.PhantomJS(phantomjs)
+url = r"https://www.firstcitizenstt.net/"
+browser.get(url)
 
-        frame = Frame(master)
-        frame.pack()
+username = browser.find_element_by_name('userName')
+username.send_keys(account_number)
+password = browser.find_element_by_name('password')
+password.send_keys(account_password)
 
-        self.gdButton = Button(frame, text="Get Data", command=self.get_data)
-        self.gdButton.pack(side=TOP)
+form = browser.find_element_by_id('noautocomplete')
+form.submit()
+#------------------------------------------------------------------------
+'''
+maidenname = browser.find_element_by_name('mothersMaidenName')
+maidenname.send_keys(account_maidenname)
 
-        self.showData = Label(frame, text="")
-        self.showData.pack(side=BOTTOM)
+email = browser.find_element_by_name('email')
+email.send_keys(account_email)
 
-    def get_data(self):
-        browser = webdriver.PhantomJS('phantomjs.exe')
-        url = r"https://www.firstcitizenstt.net/login.do?"
-        browser.get(url)
+phonenumber = browser.find_element_by_name('mobilePhoneNumber')
+phonenumber.send_keys(account_phonenumber)
 
-        username = browser.find_element_by_name('userName')
-        username.send_keys(account_number)
-        password = browser.find_element_by_name('password')
-        password.send_keys(account_password)
+pin = browser.find_element_by_name('transactionPin')
+pin.send_keys(account_pin)
 
-        form = browser.find_element_by_id('noautocomplete')
-        form.submit()
-        url = r"https://www.firstcitizenstt.net/accountList.do"
-        browser.get(url)
-        response = browser.page_source
-        soup = BeautifulSoup(response, "html.parser")
-
-        #TOTAL BALANCE
-        total_balance = []
-        total_balance_type = []
-        total_balance_amount = []
-        for td in soup.find_all('div', {'class': 'column'}):
-            for span in td.find_all('dt'):
-                total_balance_type.append(span.text)
-            for span in td.find_all('dd'):
-                total_balance_amount.append(span.text)
-        total_balance = zip(total_balance_type, total_balance_amount)
-        print total_balance
-
-        #GET CURRENT BALANCE
+tpin = browser.find_element_by_name('transactionPinVerify')
+tpin.send_keys(account_pin)
 
 
-root = Tk()
-TC = TropicalCourier(root)
-root.mainloop()
+hint = browser.find_element_by_name('hint')
+hint.send_keys(account_hint)
+
+secretQuest = Select(browser.find_element_by_id("secretQuestion"))
+secretQuest.select_by_value(account_secretquestion)
+
+secretAns = browser.find_element_by_name('secretAnswer')
+secretAns.send_keys(account_secretanswer)
+
+form = browser.find_element_by_id('noautocomplete')
+form.submit()
+
+print browser.page_source
+'''
+ #------------------------------------------------------------------------
+
+url = r"https://www.firstcitizenstt.net/accountList.do"
+browser.get(url)
+response = browser.page_source
+soup = BeautifulSoup(response, "html.parser")
+
+#TOTAL BALANCE
+total_balance = []
+total_balance_type = []
+total_balance_amount = []
+for td in soup.find_all('div', {'class': 'column'}):
+    for span in td.find_all('dt'):
+        total_balance_type.append(span.text)
+    for span in td.find_all('dd'):
+        total_balance_amount.append(span.text)
+total_balance = zip(total_balance_type, total_balance_amount)
+print total_balance
+
+#GET CURRENT BALANCE
