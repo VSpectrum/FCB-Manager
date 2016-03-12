@@ -3,8 +3,12 @@ from config import *
 from selenium import webdriver
 import os
 
-phantomjs = os.path.realpath(os.path.join(os.getcwd(), "phantomjs"))
+phantomjs_executable = ''
+if os.name=='nt': phantomjs_executable = "phantomjs.exe"
+else: phantomjs_executable = "phantomjs"
+phantomjs = os.path.realpath(os.path.join(os.getcwd(), phantomjs_executable))
 browser = webdriver.PhantomJS(phantomjs)
+
 url = r"https://www.firstcitizenstt.net/"
 browser.get(url)
 
@@ -39,7 +43,6 @@ total_available_type = []
 total_available_amount = []
 alltr =  soup.find_all("tr", {"class":["odd", "even"]},recursive=True)
 for tr in alltr:
-    #print tr.contents[1].get_text() + " " + tr.contents[-1].get_text()
     total_available_type.append(tr.contents[1].get_text())
     total_available_amount.append(tr.contents[-1].get_text())
 total_available = zip(total_available_type, total_available_amount)
