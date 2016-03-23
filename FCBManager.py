@@ -74,7 +74,14 @@ def checkbank():
             accountlog.write(email_body)
         send_email("vgooljar@gmail.com", email_subject, email_body)
 
+def dailylog():
+    account_body = ''
+    with open('accountlog.txt', 'r') as accountlog:
+        account_body = accountlog.read()
+    send_email("vgooljar@gmail.com", "FCB Daily Log", account_body)
+
 schedule.every().hour.do(checkbank)
+schedule.every().day.at("8:30").do(dailylog)
 
 while True:
     schedule.run_pending()
