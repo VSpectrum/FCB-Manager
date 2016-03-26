@@ -10,7 +10,6 @@ from matplotlib import ticker
 from config import *
 from emailer import send_email
 
-
 def checkbank():
     phantomjs_executable = ''
     if os.name=='nt': phantomjs_executable = "phantomjs.exe"
@@ -78,7 +77,7 @@ def checkbank():
     if account_body != email_body:
         with open('accountlog.txt', 'w') as accountlog:
             accountlog.write(email_body)
-        send_email("vgooljar@gmail.com", email_subject, email_body)
+        send_email("vgooljar@gmail.com", email_subject, email_body, False)
 
 def dailylog():
     account_body = ''
@@ -86,7 +85,6 @@ def dailylog():
     with open('accountlog.txt', 'r') as accountlog:
         account_body = accountlog.read()
     data_today = account_body
-    send_email("vgooljar@gmail.com", email_subject, data_today) # put last and add image of graph
 
     data_body = account_body + 'Date: '+str(datetime.date.today())
     data_body = data_body.replace('\n', '|')
@@ -135,21 +133,15 @@ def dailylog():
         figname = "graphs/fig"+str(i)+".png"
 
         plt.savefig(figname, bbox_inches='tight')
-        #plt.show()
 
-    if num_days < 30:
-        pass
-    else:
-        pass
+    send_email("vgooljar@gmail.com", email_subject, data_today, True)
 
-
-'''
 schedule.every().hour.do(checkbank)
 schedule.every().day.at("8:30").do(dailylog)
 
 while True:
     schedule.run_pending()
     time.sleep(1)
-'''
-#checkbank()
+
+checkbank()
 dailylog()
