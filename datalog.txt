@@ -1,4 +1,1 @@
-Statement Savings:22664.85|US Dollar Savings:500.18|MasterCard:1077.60|Date:2016-03-24
-Statement Savings:22264.85|US Dollar Savings:500.19|MasterCard:1077.60|Date:2016-03-25
-Statement Savings:22064.85|US Dollar Savings:500.18|MasterCard:1077.60|Date:2016-03-26
-Statement Savings:22064.85|US Dollar Savings:500.18|MasterCard:1077.60|Date:2016-03-26
+Statement Savings:22264.85|US Dollar Savings:500.18|MasterCard:1077.60|Date:2016-03-26

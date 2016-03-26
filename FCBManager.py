@@ -77,7 +77,7 @@ def checkbank():
     if account_body != email_body:
         with open('accountlog.txt', 'w') as accountlog:
             accountlog.write(email_body)
-        send_email("vgooljar@gmail.com", email_subject, email_body, False)
+        send_email(account_email, email_subject, email_body, False)
 
 def dailylog():
     account_body = ''
@@ -131,10 +131,9 @@ def dailylog():
         plt.gcf().autofmt_xdate()
 
         figname = "graphs/fig"+str(i)+".png"
-
         plt.savefig(figname, bbox_inches='tight')
 
-    send_email("vgooljar@gmail.com", email_subject, data_today, True)
+    send_email(account_email, email_subject, data_today, True)
 
 schedule.every().hour.do(checkbank)
 schedule.every().day.at("8:30").do(dailylog)
@@ -142,6 +141,3 @@ schedule.every().day.at("8:30").do(dailylog)
 while True:
     schedule.run_pending()
     time.sleep(1)
-
-checkbank()
-dailylog()
