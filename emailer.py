@@ -24,4 +24,3 @@ def send_email(recipient, subject, body):
     except:
         print "Failed to send mail"
 
-#send_email("vgooljar@gmail.com", "Test Subject", "Test Body")

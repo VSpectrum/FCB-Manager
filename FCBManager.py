@@ -1,9 +1,15 @@
 from bs4 import BeautifulSoup
 from selenium import webdriver
-import os, schedule, time
+from collections import defaultdict
+import os, schedule, time, datetime
+
+import matplotlib.pyplot as plt
+import matplotlib.dates as mpdates
+from matplotlib import ticker
 
 from config import *
-from emailer import *
+from emailer import send_email
+
 
 def checkbank():
     phantomjs_executable = ''
@@ -76,13 +82,74 @@ def checkbank():
 
 def dailylog():
     account_body = ''
+    email_subject = "FCB Daily Log | "+str(datetime.date.today())
     with open('accountlog.txt', 'r') as accountlog:
         account_body = accountlog.read()
-    send_email("vgooljar@gmail.com", "FCB Daily Log", account_body)
+    data_today = account_body
+    send_email("vgooljar@gmail.com", email_subject, data_today) # put last and add image of graph
 
+    data_body = account_body + 'Date: '+str(datetime.date.today())
+    data_body = data_body.replace('\n', '|')
+    data_body = data_body.replace(': ', ':')
+    data_body = data_body.replace('$', '')
+    data_body = data_body.replace(',', '')
+
+    with open('datalog.txt', 'a+') as datalog:
+        datalog.write(data_body+'\n')
+
+    account_data = []
+    with open('datalog.txt', 'r') as datalog:
+        account_data = datalog.read().splitlines()
+
+    num_days = sum(1 for line in account_data)
+
+    account_dict = defaultdict(list)
+
+    for day in account_data:
+        day_data = day.split("|")
+        for account_info in day_data:
+            account_parse = account_info.split(':')
+            account_dict[account_parse[0]].append(account_parse[1])
+
+    dict_key = list(account_dict.keys()) #[0] is dates, rest is accounts
+
+    dates = account_dict[dict_key[0]]
+    x = [datetime.datetime.strptime(d,'%Y-%m-%d').date() for d in dates]
+
+    for i in range(1, len(dict_key)):
+        plt.clf()
+        account_money = account_dict[dict_key[i]]
+
+        plt.plot(x,account_money)
+        # beautify the x-labels
+        plt.title(dict_key[i])
+        plt.ylabel('Amount Available ($)')
+        plt.xlabel('Date (dd/mm/yyyy)')
+
+        plt.gca().yaxis.set_major_formatter(ticker.FormatStrFormatter('%.2f'))
+
+        plt.gca().xaxis.set_major_formatter(mpdates.DateFormatter('%d/%m/%Y'))
+        plt.gca().xaxis.set_major_locator(mpdates.DayLocator())
+        plt.gcf().autofmt_xdate()
+
+        figname = "graphs/fig"+str(i)+".png"
+
+        plt.savefig(figname, bbox_inches='tight')
+        #plt.show()
+
+    if num_days < 30:
+        pass
+    else:
+        pass
+
+
+'''
 schedule.every().hour.do(checkbank)
 schedule.every().day.at("8:30").do(dailylog)
 
 while True:
     schedule.run_pending()
     time.sleep(1)
+'''
+#checkbank()
+dailylog()
