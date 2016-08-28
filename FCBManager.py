@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from collections import defaultdict
-import os, schedule, time, datetime
+import os, datetime
 
 import matplotlib.pyplot as plt
 import matplotlib.dates as mpdates
@@ -135,9 +135,8 @@ def dailylog():
 
     send_email(account_email, email_subject, data_today, True)
 
-schedule.every().hour.do(checkbank)
-schedule.every().day.at("8:30").do(dailylog)
-
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+if datetime.datetime.now().hour == 8:
+	dailylog()
+	
+else:
+	checkbank()

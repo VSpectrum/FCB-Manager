@@ -1,2 +1,4 @@
 config.py
 ghostdriver.log
+*.pyc
+*.log
