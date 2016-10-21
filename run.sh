@@ -1,6 +1,6 @@
 #!/bin/bash
-cd /var/www/PyDev/FCB/FCB-Manager/
-source ../bin/activate
+cd /scripts/FCB/FCB-Manager
+source FCB-env/bin/activate
 python FCBManager.py
 
 
