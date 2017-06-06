@@ -3,9 +3,13 @@ from selenium import webdriver
 from collections import defaultdict
 import os, datetime
 
+import matplotlib
+matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 import matplotlib.dates as mpdates
 from matplotlib import ticker
+
 
 from config import *
 from emailer import send_email
@@ -74,7 +78,7 @@ def checkbank():
     with open('accountlog.txt', 'r') as accountlog:
         account_body = accountlog.read()
 
-    if account_body != email_body:
+    if (account_body != email_body) and total_available:
         with open('accountlog.txt', 'w') as accountlog:
             accountlog.write(email_body)
         send_email(account_email, email_subject, email_body, False)
@@ -127,8 +131,10 @@ def dailylog():
         plt.gca().yaxis.set_major_formatter(ticker.FormatStrFormatter('%.2f'))
 
         plt.gca().xaxis.set_major_formatter(mpdates.DateFormatter('%d/%m/%Y'))
-        plt.gca().xaxis.set_major_locator(mpdates.DayLocator())
-        plt.gcf().autofmt_xdate()
+        plt.gca().xaxis.set_major_locator(mpdates.MonthLocator())
+        plt.gca().xaxis.set_minor_locator(mpdates.DayLocator())
+	plt.gca().grid(True)
+	plt.gcf().autofmt_xdate()
 
         figname = "graphs/fig"+str(i)+".png"
         plt.savefig(figname, bbox_inches='tight')
@@ -137,6 +143,5 @@ def dailylog():
 
 if datetime.datetime.now().hour == 8:
 	dailylog()
-	
 else:
 	checkbank()
