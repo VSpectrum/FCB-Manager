@@ -11,7 +11,7 @@ ipaddress==1.0.16
 ipython==2.4.1
 matplotlib==1.5.3
 ndg-httpsclient==0.4.2
-numpy==1.11.2
+numpy==1.21.0
 pexpect==4.2.0
 ptyprocess==0.5.1
 pyasn1==0.1.9
